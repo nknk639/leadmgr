@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  mysql:
+    image: mysql:8.4
+    container_name: leadmgr-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: leadmgr
+      MYSQL_USER: leadmgr
+      MYSQL_PASSWORD: leadmgr_pass
+      MYSQL_ROOT_PASSWORD: root_pass
+      TZ: Asia/Tokyo
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+      - ./initdb:/docker-entrypoint-initdb.d   # → 初回のみ実行される SQL を置く場所
+volumes:
+  mysql-data:
