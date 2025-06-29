@@ -31,3 +31,12 @@ build/
 
 ### VS Code ###
 .vscode/
+
+/target/
+/.idea/
+/.gradle/
+/.classpath
+.project
+.settings/
+/*.iml
+.env
