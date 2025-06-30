@@ -63,6 +63,7 @@
                             name="resultCodes"
                             th:value="${code.id}"
                             th:checked="${#lists.contains(resultCodes, code.id)}" />
+					<label class="form-check-label me-3" for="blankResult">空欄</label>
                     <label class="form-check-label" th:text="${code.label}">未連絡</label>
                     </div>
                 </div>
