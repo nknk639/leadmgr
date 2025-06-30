@@ -1,0 +1,131 @@
+<!-- leads/list.html – Simple baseline version (no custom responsive tweaks) -->
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>リード一覧 | LeadMgr</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet" />
+</head>
+<body class="bg-light">
+
+<!-- ===== ヘッダー ===== -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+        <a class="navbar-brand fw-bold" th:href="@{/}">LeadMgr</a>
+        <div class="d-flex gap-2 ms-auto">
+            <a class="btn btn-outline-light btn-sm" th:href="@{/leads}">リード</a>
+            <a class="btn btn-outline-light btn-sm disabled">商談</a>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== 本文 ===== -->
+<div class="container-fluid py-4">
+    <div class="row g-3">
+        <!-- サイドバー -->
+        <aside class="col-12 col-md-3 col-lg-2">
+            <div class="list-group">
+                <a th:href="@{/}" class="list-group-item list-group-item-action d-flex align-items-center gap-2">
+                    <i class="bi bi-speedometer2"></i> ダッシュボード
+                </a>
+                <a th:href="@{/leads}" class="list-group-item list-group-item-action active d-flex align-items-center gap-2">
+                    <i class="bi bi-telephone"></i> リード一覧
+                </a>
+                <a th:href="@{/import}" class="list-group-item list-group-item-action d-flex align-items-center gap-2">
+                    <i class="bi bi-file-earmark-arrow-up"></i> CSV インポート
+                </a>
+            </div>
+        </aside>
+
+        <!-- メイン -->
+        <main class="col-12 col-md-9 col-lg-10">
+            <!-- 検索フォーム -->
+            <form th:action="@{/leads}" method="get" class="row gy-2 gx-3 align-items-end mb-3">
+                <div class="col-auto">
+                    <label class="form-label" for="keyword">キーワード</label>
+                    <input type="text" class="form-control" id="keyword" name="q" th:value="${param.q}" placeholder="会社名・電話番号など" />
+                </div>
+                <div class="col-auto">
+                    <label class="form-label" for="recall">要再コール</label>
+                    <select class="form-select" id="recall" name="recall">
+                        <option th:selected="${param.recall == null}" value="">すべて</option>
+                        <option th:selected="${param.recall == '1'}" value="1">再コール対象のみ</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <label class="form-label d-block">電話結果</label>
+                    <div class="form-check form-check-inline"
+                        th:each="code : ${codes}">
+                    <input class="form-check-input"
+                            type="checkbox"
+                            name="resultCodes"
+                            th:value="${code.id}"
+                            th:checked="${#lists.contains(resultCodes, code.id)}" />
+                    <label class="form-check-label" th:text="${code.label}">未連絡</label>
+                    </div>
+                </div>
+
+                <div class="col-auto">
+                    <button class="btn btn-primary"><i class="bi bi-search"></i> 検索</button>
+                </div>
+            </form>
+
+            <!-- リード一覧 -->
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>会社名</th>
+                        <th>電話番号</th>
+                        <th>所在地</th>
+                        <th>求人タイトル</th>
+                        <th>掲載日</th>
+                        <th>従業員数</th>
+                        <th>最終架電結果</th>
+                        <th>最終架電日時</th>
+                        <th>次回コール予定</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="lead, stat : ${leads}">
+                        <td th:text="${stat.index + 1}"></td>
+                        <td><a th:href="@{/leads/{id}(id=${lead.id})}" th:text="${lead.companyName}"></a></td>
+                        <td th:text="${lead.phoneNumber}"></td>
+                        <td th:text="${lead.address}"></td>
+                        <td th:text="${lead.jobTitle}"></td>
+                        <td th:text="${#temporals.format(lead.postingDate, 'yyyy/MM/dd')}"></td>
+                        <td th:text="${lead.totalEmployees != null ? lead.totalEmployees + '名' : '-'}"></td>
+                        <td th:text="${lead.lastCallResult != null ? lead.lastCallResult.label : '-'}"></td>
+                        <td th:text="${lead.lastCallDate != null ? #temporals.format(lead.lastCallDate, 'yyyy/MM/dd HH:mm') : '-'}"></td>
+                        <td th:text="${lead.nextCallDate != null ? #temporals.format(lead.nextCallDate, 'yyyy/MM/dd HH:mm') : '-'}"></td>
+                        <td class="text-end"><a class="btn btn-sm btn-outline-secondary" th:href="@{/leads/{id}(id=${lead.id})}">詳細</a></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- ページネーション -->
+            <nav th:if="${leads.totalPages > 1}">
+                <ul class="pagination justify-content-end">
+                    <li th:classappend="${leads.first}? 'disabled'" class="page-item">
+                        <a class="page-link" th:href="@{/leads(page=${leads.number - 1},size=${leads.size},q=${param.q},recall=${param.recall})}">&laquo;</a>
+                    </li>
+                    <li th:each="p : ${#numbers.sequence(0, leads.totalPages - 1)}" th:classappend="${p == leads.number}? 'active'" class="page-item">
+                        <a class="page-link" th:href="@{/leads(page=${p},size=${leads.size},q=${param.q},recall=${param.recall})}" th:text="${p + 1}"></a>
+                    </li>
+                    <li th:classappend="${leads.last}? 'disabled'" class="page-item">
+                        <a class="page-link" th:href="@{/leads(page=${leads.number + 1},size=${leads.size},q=${param.q},recall=${param.recall})}">&raquo;</a>
+                    </li>
+                </ul>
+            </nav>
+        </main>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
