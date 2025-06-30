@@ -96,15 +96,14 @@
                     <!-- 履歴テーブル -->
                     <div class="table-responsive">
                         <table class="table table-sm table-bordered align-middle">
-                            <thead class="table-light"><tr><th>日時</th><th>結果</th><th>メモ</th><th>担当</th></tr></thead>
+                            <thead class="table-light"><tr><th>日時</th><th>結果</th><th>メモ</th></tr></thead>
                             <tbody>
                                 <tr th:each="ch : ${callHistories}">
                                     <td th:text="${#temporals.format(ch.callDatetime,'yyyy/MM/dd HH:mm')}"></td>
                                     <td th:text="${ch.resultCode.label}"></td>
                                     <td th:text="${ch.note}"></td>
-                                    <td th:text="${ch.operator}">-</td>
                                 </tr>
-                                <tr th:if="${#lists.isEmpty(callHistories)}"><td colspan="4" class="text-center">履歴なし</td></tr>
+                                <tr th:if="${#lists.isEmpty(callHistories)}"><td colspan="3" class="text-center">履歴なし</td></tr>
                             </tbody>
                         </table>
                     </div>
