@@ -24,10 +24,10 @@ public class CallService {
     private final CallHistoryRepository callRepo;
 
     @Transactional
-    public void registerCall(Long leadId,
-                             Long resultCodeId,
-                             String memo,
-                             LocalDateTime nextCallDate) {
+    public CallHistory registerCall(Long leadId,
+    		Long resultCodeId,
+            String memo,
+            LocalDateTime nextCallDate) {
 
         Lead lead   = leadRepo.findById(leadId)
                               .orElseThrow(() -> new IllegalArgumentException("Lead not found"));
@@ -49,6 +49,8 @@ public class CallService {
         lead.setLastCallResult(rc);
         lead.setNextCallDate(nextCallDate);
         leadRepo.save(lead);
+
+        return ch;
     }
     
 
