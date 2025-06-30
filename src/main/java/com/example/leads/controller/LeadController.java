@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.leads.model.Lead;
+import com.example.leads.service.CallService;
 import com.example.leads.service.LeadService;
 import com.example.leads.service.ResultCodeService;
 
@@ -28,6 +29,7 @@ public class LeadController {
 
     private final LeadService leadSvc;
     private final ResultCodeService codeSvc;
+    private final CallService callSvc;
 
     /* ======= 一覧 ======= */
     @GetMapping("/leads")
@@ -58,7 +60,7 @@ public class LeadController {
         model.addAttribute("nextLeadId", id + 1);   // 存在チェックは省略
 
         model.addAttribute("lead", lead);
-        model.addAttribute("callHistories", lead.getCallHistories()); // ★ Entity に @OneToMany がある想定
+        model.addAttribute("callHistories", callSvc.getHistories(lead));
         model.addAttribute("resultCodes", codeSvc.getActiveCodes());
         return "leads/detail";
     }

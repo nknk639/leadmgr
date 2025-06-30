@@ -1,6 +1,7 @@
 package com.example.leads.service;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,4 +50,11 @@ public class CallService {
         lead.setNextCallDate(nextCallDate);
         leadRepo.save(lead);
     }
+    
+
+    @Transactional(readOnly = true)
+    public List<CallHistory> getHistories(Lead lead) {
+        return callRepo.findByLeadOrderByCallDatetimeDesc(lead);
+    }
+    
 }
