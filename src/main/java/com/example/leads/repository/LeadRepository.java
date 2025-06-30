@@ -11,7 +11,7 @@ import com.example.leads.model.Lead;
 
 public interface LeadRepository
         extends JpaRepository<Lead, Long>, JpaSpecificationExecutor<Lead> {   // ★追加
-
+	
     Optional<Lead> findByPhoneNumber(String phoneNumber);
 
     Page<Lead> findByCompanyNameContainingIgnoreCaseOrPhoneNumberContaining(

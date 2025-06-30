@@ -60,7 +60,7 @@ public class Lead {
     @Column(name = "last_call_date")
     private LocalDateTime lastCallDate;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "last_call_result")
     private ResultCode lastCallResult;
 
