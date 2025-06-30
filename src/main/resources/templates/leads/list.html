@@ -54,19 +54,29 @@
                         <option th:selected="${param.recall == '1'}" value="1">再コール対象のみ</option>
                     </select>
                 </div>
-                <div class="col-auto">
-                    <label class="form-label d-block">電話結果</label>
-                    <div class="form-check form-check-inline"
-                        th:each="code : ${codes}">
-                    <input class="form-check-input"
-                            type="checkbox"
-                            name="resultCodes"
-                            th:value="${code.id}"
-                            th:checked="${#lists.contains(resultCodes, code.id)}" />
-					<label class="form-check-label me-3" for="blankResult">空欄</label>
-                    <label class="form-check-label" th:text="${code.label}">未連絡</label>
-                    </div>
-                </div>
+				<div class="col-auto">
+				  <label class="form-label d-block">電話結果</label>
+
+				  <!-- (1) 空欄（null）を検索する固定チェック -->
+				  <input class="form-check-input"
+				         type="checkbox"
+				         id="blankResult"      
+				         name="blank"              
+				         value="1"
+				         th:checked="${param.blank == '1'}" />
+				  <label class="form-check-label me-3" for="blankResult">空欄</label>
+
+				  <!-- (2) 既存：結果コードごとのチェック -->
+				  <div class="form-check form-check-inline"
+				       th:each="code : ${codes}">
+				    <input class="form-check-input"
+				           type="checkbox"
+				           name="resultCodes" 
+				           th:value="${code.id}"
+				           th:checked="${#lists.contains(resultCodes, code.id)}" />
+				    <label class="form-check-label" th:text="${code.label}">未連絡</label>
+				  </div>
+				</div>
 
                 <div class="col-auto">
                     <button class="btn btn-primary"><i class="bi bi-search"></i> 検索</button>
