@@ -91,10 +91,14 @@ public class LeadService {
                 if (phone.isEmpty() || leadRepo.findByPhoneNumber(phone).isPresent()) {
                     continue;
                 }
+                String company = emptyToNull(cols[2]);
+                if (company == null) {
+                    continue;
+                }
                 Lead lead = Lead.builder()
                         .handler(emptyToNull(cols[0]))
                         .handlerRole(emptyToNull(cols[1]))
-                        .companyName(emptyToNull(cols[2]))
+                        .companyName(company)
                         .address(emptyToNull(cols[3]))
                         .phoneNumber(phone)
                         .jobTitle(emptyToNull(cols[5]))
