@@ -76,6 +76,8 @@ public class LeadService {
         int inserted = 0;
         ResultCode defaultCode = codeRepo.findById(1L).orElse(null);
         var newLeads = new java.util.ArrayList<Lead>();
+        var seenPhones = new java.util.HashSet<String>();
+
 
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(stream, StandardCharsets.UTF_8))) {
@@ -88,9 +90,12 @@ public class LeadService {
                 String[] cols = line.split(",", -1);
                 if (cols.length < 5) continue;
                 String phone = emptyToNull(cols[4]);
-                if (phone == null || leadRepo.findByPhoneNumber(phone).isPresent()) {
+                if (phone == null
+                        || seenPhones.contains(phone)
+                        || leadRepo.findByPhoneNumber(phone).isPresent()) {
                     continue;
                 }
+                seenPhones.add(phone);
                 String company = emptyToNull(cols[2]);
                 if (company == null) {
                     continue;
