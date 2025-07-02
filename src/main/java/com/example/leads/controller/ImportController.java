@@ -34,23 +34,38 @@ public class ImportController {
     public String preview(@RequestParam MultipartFile file,
                           Model model,
                           HttpSession session) {
-
-        // TODO: CSV を先頭10行パース → model に headers / previewRows を載せる
-        // ファイルを Session に一時保持して後続の execute で利用
-        session.setAttribute("IMPORT_FILE", file);
-        model.addAttribute("headers", /* List<String> */ null);
-        model.addAttribute("previewRows", /* List<List<String>> */ null);
+        try (var reader = new java.io.BufferedReader(
+                new java.io.InputStreamReader(file.getInputStream(),
+                        java.nio.charset.StandardCharsets.UTF_8))) {
+            String headerLine = reader.readLine();
+            if (headerLine == null) {
+                return "import";
+            }
+            var headers = java.util.Arrays.asList(headerLine.split(",", -1));
+            var rows = new java.util.ArrayList<java.util.List<String>>();
+            for (int i = 0; i < 10; i++) {
+                String line = reader.readLine();
+                if (line == null) break;
+                rows.add(java.util.Arrays.asList(line.split(",", -1)));
+            }
+            session.setAttribute("IMPORT_FILE_BYTES", file.getBytes());
+            model.addAttribute("headers", headers);
+            model.addAttribute("previewRows", rows);
+        } catch (java.io.IOException e) {
+            log.error("CSV preview error", e);
+        }
         return "import";
     }
 
     /* ===== 取込実行 ===== */
     @PostMapping("/import/execute")
     public String execute(HttpSession session, Model model) {
-        MultipartFile file = (MultipartFile) session.getAttribute("IMPORT_FILE");
-        if (file == null) {
+    	byte[] bytes = (byte[]) session.getAttribute("IMPORT_FILE_BYTES");
+        if (bytes == null) {
             return "redirect:/import";
         }
-        var result = leadSvc.importCsv(file);
+        var result = leadSvc.importCsv(new java.io.ByteArrayInputStream(bytes));
+        session.removeAttribute("IMPORT_FILE_BYTES");
         model.addAttribute("progress", 100);
         model.addAttribute("importResult", result);
         // プレビューを再表示しなくても良いならリダイレクト
