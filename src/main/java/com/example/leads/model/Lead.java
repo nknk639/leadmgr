@@ -71,6 +71,12 @@ public class Lead {
 
     @Column(name = "next_call_date")
     private LocalDateTime nextCallDate;
+    
+    @Column(name = "handler", length = 50)
+    private String handler;
+
+    @Column(name = "handler_role", length = 50)
+    private String handlerRole;
 
     @OneToMany(mappedBy = "lead", fetch = FetchType.LAZY)
     private List<CallHistory> callHistories;
