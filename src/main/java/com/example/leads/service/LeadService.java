@@ -87,8 +87,8 @@ public class LeadService {
                 total++;
                 String[] cols = line.split(",", -1);
                 if (cols.length < 5) continue;
-                String phone = cols[4].trim();
-                if (phone.isEmpty() || leadRepo.findByPhoneNumber(phone).isPresent()) {
+                String phone = emptyToNull(cols[4]);
+                if (phone == null || leadRepo.findByPhoneNumber(phone).isPresent()) {
                     continue;
                 }
                 String company = emptyToNull(cols[2]);
