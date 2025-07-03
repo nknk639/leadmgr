@@ -55,9 +55,9 @@ public class LeadController {
         Lead lead = leadSvc.getLead(id)
                            .orElseThrow(() -> new IllegalArgumentException("Lead not found"));
 
-        // 前後ナビ用の ID（最小限の実装：ID±1 試行。実運用でページング対応なら追加実装）
-        model.addAttribute("prevLeadId", id > 1 ? id - 1 : null);
-        model.addAttribute("nextLeadId", id + 1);   // 存在チェックは省略
+     // 前後ナビ用 ID を取得
+        model.addAttribute("prevLeadId", leadSvc.findPrevId(id).orElse(null));
+        model.addAttribute("nextLeadId", leadSvc.findNextId(id).orElse(null));
 
         model.addAttribute("lead", lead);
         model.addAttribute("callHistories", callSvc.getHistories(lead));

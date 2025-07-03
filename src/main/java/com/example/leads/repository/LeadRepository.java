@@ -16,4 +16,10 @@ public interface LeadRepository
 
     Page<Lead> findByCompanyNameContainingIgnoreCaseOrPhoneNumberContaining(
             String companyName, String phoneNumber, Pageable pageable);
+    
+ // 前後ナビ用: 指定IDより小さい(古い)レコードのうち最大ID
+    Optional<Lead> findFirstByIdLessThanOrderByIdDesc(Long id);
+
+    // 前後ナビ用: 指定IDより大きい(新しい)レコードのうち最小ID
+    Optional<Lead> findFirstByIdGreaterThanOrderByIdAsc(Long id);
 }

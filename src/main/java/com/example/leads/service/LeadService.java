@@ -63,6 +63,19 @@ public class LeadService {
     public Optional<Lead> getLead(Long id) {
         return leadRepo.findById(id);
     }
+    /** 指定IDより小さいレコードのうち最大IDを取得 */
+    @Transactional(readOnly = true)
+    public Optional<Long> findPrevId(Long id) {
+        return leadRepo.findFirstByIdLessThanOrderByIdDesc(id)
+                        .map(Lead::getId);
+    }
+
+    /** 指定IDより大きいレコードのうち最小IDを取得 */
+    @Transactional(readOnly = true)
+    public Optional<Long> findNextId(Long id) {
+        return leadRepo.findFirstByIdGreaterThanOrderByIdAsc(id)
+                        .map(Lead::getId);
+    }
 
     public List<Lead> findRecalls(LocalDateTime asOf) {
         // nextCallDate <= asOf で抽出

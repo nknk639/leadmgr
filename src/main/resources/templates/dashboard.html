@@ -1,4 +1,4 @@
-<!-- dashboard.html – ダッシュボード（シンプルベースライン） -->
+<!-- dashboard.html – ダッシュボード -->
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="ja">
 <head>
@@ -45,36 +45,39 @@
         <!-- メイン -->
         <main class="col-12 col-md-9 col-lg-10">
             <!-- KPI カード -->
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <a th:href="@{/(period='day')}" class="nav-link" th:classappend="${period=='day'}?'active'">日</a>
+                </li>
+                <li class="nav-item">
+                    <a th:href="@{/(period='month')}" class="nav-link" th:classappend="${period=='month'}?'active'">月</a>
+                </li>
+            </ul>
             <div class="row g-3 mb-4">
-                <div class="col-6 col-lg-3">
+                <div class="col-4">
                     <div class="card text-bg-light shadow-sm">
-                        <div class="card-body text-center">
-                            <div class="fs-4 fw-bold" th:text="${totalLeads}">0</div>
-                            <div class="small">総リード件数</div>
+                        <div class="card-body text-center position-relative">
+                            <a href="#" class="stretched-link" data-bs-toggle="modal" data-bs-target="#rateModal"></a>
+                            <div class="fs-4 fw-bold" th:text="${kpiRate} + '%'">0%</div>
+                            <div class="small">アポ率</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-lg-3">
+                <div class="col-4">
                     <div class="card text-bg-light shadow-sm">
-                        <div class="card-body text-center">
-                            <div class="fs-4 fw-bold" th:text="${callsToday}">0</div>
-                            <div class="small">本日の架電</div>
+                        <div class="card-body text-center position-relative">
+                            <a href="#" class="stretched-link" data-bs-toggle="modal" data-bs-target="#callModal"></a>
+                            <div class="fs-4 fw-bold" th:text="${kpiCall}">0</div>
+                            <div class="small">コール件数</div>
                         </div>
                     </div>
                 </div>
-                <div class="col-6 col-lg-3">
+               <div class="col-4">
                     <div class="card text-bg-light shadow-sm">
-                        <div class="card-body text-center">
-                            <div class="fs-4 fw-bold" th:text="${appointments}">0</div>
-                            <div class="small">アポ数</div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-6 col-lg-3">
-                    <div class="card text-bg-light shadow-sm">
-                        <div class="card-body text-center">
-                            <div class="fs-4 fw-bold" th:text="${recallToday}">0</div>
-                            <div class="small">要再コール</div>
+                        <div class="card-body text-center position-relative">
+                            <a href="#" class="stretched-link" data-bs-toggle="modal" data-bs-target="#appModal"></a>
+                            <div class="fs-4 fw-bold" th:text="${kpiApp}">0</div>
+                            <div class="small">アポ件数</div>
                         </div>
                     </div>
                 </div>
@@ -82,7 +85,7 @@
 
             <!-- グラフエリア -->
             <div class="card shadow-sm mb-4">
-                <div class="card-header bg-white">月別架電数</div>
+                <div class="card-header bg-white">今月の日別架電数</div>
                 <div class="card-body">
                     <canvas id="callsChart" height="90"></canvas>
                 </div>
@@ -91,30 +94,96 @@
     </div>
 </div>
 
+<!-- Modals -->
+<div class="modal fade" id="rateModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">月別アポ率</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead><tr><th>月</th><th>アポ率</th></tr></thead>
+          <tbody>
+            <tr th:each="r : ${rateTable}">
+              <td th:text="${r.formattedMonth()}"></td>
+              <td th:text="${r.value} + '%'">0%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="callModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">月別コール件数</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead><tr><th>月</th><th>コール件数</th></tr></thead>
+          <tbody>
+            <tr th:each="r : ${callTable}">
+              <td th:text="${r.formattedMonth()}"></td>
+              <td th:text="${r.value}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal fade" id="appModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">月別アポ件数</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead><tr><th>月</th><th>アポ件数</th></tr></thead>
+          <tbody>
+            <tr th:each="r : ${appTable}">
+              <td th:text="${r.formattedMonth()}"></td>
+              <td th:text="${r.value}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script th:inline="javascript">
-    /* [[${#lists.isEmpty(monthLabels)}]] データがない場合はスキップ */
-    /*<![CDATA[*/
-    const ctx = document.getElementById('callsChart');
-    const callsChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: /*[[${monthLabels}]]*/ ["Jan", "Feb"],
-            datasets: [{
-                label: '架電数',
-                data: /*[[${monthCalls}]]*/ [0, 0]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                y: { beginAtZero: true }
-            }
-        }
-    });
-    /*]]>*/
+	/*<![CDATA[*/
+	const ctx = document.getElementById('callsChart');
+	const chart = new Chart(ctx, {
+	    type: 'bar',
+	    data: {
+	        labels: /*[[${dailyLabels}]]*/ [],
+	        datasets: [{
+	            label: '架電数',
+	            data: /*[[${dailyCalls}]]*/ []
+	        }]
+	    },
+	    options: {
+	        responsive: true,
+	        maintainAspectRatio: false,
+	        scales: { y: { beginAtZero: true } }
+	    }
+	});
+	/*]]>*/
 </script>
 </body>
 </html>
