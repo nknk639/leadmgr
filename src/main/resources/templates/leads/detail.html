@@ -43,6 +43,19 @@
 
         <!-- メイン -->
         <main class="col-12 col-md-9 col-lg-10">
+        	<!-- 戻るボタン & 位置表示 -->
+            <div class="d-flex align-items-center mb-2">
+                <a class="btn btn-outline-secondary me-2"
+                   th:href="@{/leads(page=${param.page},size=${param.size},q=${param.q},recall=${param.recall},resultCodes=${param.resultCodes})}">
+                    &laquo; 戻る
+                </a>
+                <span class="text-muted"
+                      th:if="${param.idx != null && param.total != null}"
+                      th:text="${param.idx} + '件目/' + ${param.total}">
+                    1件目/1
+                </span>
+            </div>
+            
             <!-- タイトル & ナビボタン -->
             <h2 th:text="${lead.companyName}" class="mb-2">会社名</h2>
             <div class="d-flex justify-content-between align-items-center mb-4">
