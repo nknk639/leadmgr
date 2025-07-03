@@ -34,7 +34,7 @@ public class ResultCode {
     private Boolean active;
     
     public boolean isEnabled() {
-        return this.active;
+    	return Boolean.TRUE.equals(this.active);
     }
     
 }

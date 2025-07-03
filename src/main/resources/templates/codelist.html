@@ -61,7 +61,7 @@
                             </td>
                             <td>
                                 <form th:action="@{/codes/{id}/toggle(id=${code.id})}" method="post">
-                                    <input type="hidden" name="_method" value="put" />
+                                    <input type="hidden" name="_method" value="PUT" />
                                     <div class="form-check form-switch m-0">
                                         <input class="form-check-input" type="checkbox" name="enabled" th:checked="${code.enabled}" onchange="this.form.submit()" />
                                     </div>
