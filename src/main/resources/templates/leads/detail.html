@@ -47,15 +47,19 @@
             <h2 th:text="${lead.companyName}" class="mb-2">会社名</h2>
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <a class="btn btn-outline-secondary" role="button"
-                   th:href="${prevLeadId != null}? @{/leads/{id}(id=${prevLeadId})} : null"
+                   th:href="@{/leads/{id}(id=${prevLeadId},ids=${idList},idx=${currentIndex - 1})}"
                    th:classappend="${prevLeadId == null}? ' disabled'">
                     &laquo; 前へ
                 </a>
                 <a class="btn btn-outline-secondary" role="button"
-                   th:href="${nextLeadId != null}? @{/leads/{id}(id=${nextLeadId})} : null"
-                   th:classappend="${nextLeadId == null}? ' disabled'">
+                   th:if="${nextLeadId != null}"
+                   th:href="@{/leads/{id}(id=${nextLeadId},ids=${idList},idx=${currentIndex + 1})}">
                     次へ &raquo;
                 </a>
+                <button type="button" class="btn btn-outline-secondary"
+                        th:if="${nextLeadId == null}" data-bs-toggle="modal" data-bs-target="#endModal">
+                    次へ &raquo;
+                </button>
             </div>
 
             <!-- 基本情報カード (全フィールド) -->
@@ -114,6 +118,24 @@
             </div>
         </main>
     </div>
+</div>
+
+<!-- 終了モーダル -->
+<div class="modal fade" id="endModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">終了</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        リストの最後のリードです。
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary" th:href="@{/leads}">OK</a>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

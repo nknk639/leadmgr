@@ -46,18 +46,45 @@ public class LeadController {
         // ★ ここを追加 – null のときは空リストを渡す
         model.addAttribute("resultCodes",
                 resultCodes != null ? resultCodes : List.of());
+     // 表示中のリードIDリストをクエリに渡すため保持
+        model.addAttribute("idList",
+                leads.getContent().stream().map(Lead::getId).toList());
         return "leads/list";
     }
 
     /* ======= 詳細 ======= */
     @GetMapping("/leads/{id}")
-    public String detail(@PathVariable Long id, Model model) {
+    public String detail(@PathVariable Long id,
+            @RequestParam(required = false) List<Long> ids,
+            @RequestParam(required = false) Integer idx,
+            Model model) {
         Lead lead = leadSvc.getLead(id)
                            .orElseThrow(() -> new IllegalArgumentException("Lead not found"));
 
-     // 前後ナビ用 ID を取得
-        model.addAttribute("prevLeadId", leadSvc.findPrevId(id).orElse(null));
-        model.addAttribute("nextLeadId", leadSvc.findNextId(id).orElse(null));
+     // // 表示順リストが渡されている場合はその順で前後を決定
+        Long prevId = null;
+        Long nextId = null;
+        int current = idx != null ? idx : -1;
+        if (ids != null && !ids.isEmpty()) {
+            if (current < 0) {
+                current = ids.indexOf(id);
+            }
+            if (current > 0) {
+                prevId = ids.get(current - 1);
+            }
+            if (current < ids.size() - 1 && current >= 0) {
+                nextId = ids.get(current + 1);
+            }
+        } else {
+            // Fallback: 単純に ID ±1
+            prevId = id > 1 ? id - 1 : null;
+            nextId = id + 1;
+        }
+
+        model.addAttribute("prevLeadId", prevId);
+        model.addAttribute("nextLeadId", nextId);
+        model.addAttribute("idList", ids != null ? ids : List.of());
+        model.addAttribute("currentIndex", current);
 
         model.addAttribute("lead", lead);
         model.addAttribute("callHistories", callSvc.getHistories(lead));

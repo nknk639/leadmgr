@@ -99,7 +99,7 @@
                     <tbody>
                     <tr th:each="lead, stat : ${leads}">
                         <td th:text="${stat.index + 1}"></td>
-                        <td><a th:href="@{/leads/{id}(id=${lead.id})}" th:text="${lead.companyName}"></a></td>
+                        <td><a th:href="@{/leads/{id}(id=${lead.id},ids=${idList},idx=${stat.index})}" th:text="${lead.companyName}"></a></td>
                         <td th:text="${lead.phoneNumber}"></td>
                         <td th:text="${lead.address}"></td>
                         <td th:text="${lead.jobTitle}"></td>
@@ -108,7 +108,7 @@
                         <td th:text="${lead.lastCallResult != null ? lead.lastCallResult.label : '-'}"></td>
                         <td th:text="${lead.lastCallDate != null ? #temporals.format(lead.lastCallDate, 'yyyy/MM/dd HH:mm') : '-'}"></td>
                         <td th:text="${lead.nextCallDate != null ? #temporals.format(lead.nextCallDate, 'yyyy/MM/dd HH:mm') : '-'}"></td>
-                        <td class="text-end"><a class="btn btn-sm btn-outline-secondary" th:href="@{/leads/{id}(id=${lead.id})}">詳細</a></td>
+                        <td class="text-end"><a class="btn btn-sm btn-outline-secondary" th:href="@{/leads/{id}(id=${lead.id},ids=${idList},idx=${stat.index})}">詳細</a></td>
                     </tr>
                     </tbody>
                 </table>
