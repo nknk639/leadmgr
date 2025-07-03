@@ -60,13 +60,13 @@
             <h2 th:text="${lead.companyName}" class="mb-2">会社名</h2>
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <a class="btn btn-outline-secondary" role="button"
-                   th:href="@{/leads/{id}(id=${prevLeadId},ids=${idList},idx=${currentIndex - 1})}"
+                   th:href="@{/leads/{id}(id=${prevLeadId},ids=${idList},idx=${currentIndex - 1},page=${param.page},size=${param.size},q=${param.q},recall=${param.recall},resultCodes=${param.resultCodes},total=${param.total})}"
                    th:classappend="${prevLeadId == null}? ' disabled'">
                     &laquo; 前へ
                 </a>
                 <a class="btn btn-outline-secondary" role="button"
                    th:if="${nextLeadId != null}"
-                   th:href="@{/leads/{id}(id=${nextLeadId},ids=${idList},idx=${currentIndex + 1})}">
+                   th:href="@{/leads/{id}(id=${nextLeadId},ids=${idList},idx=${currentIndex + 1},page=${param.page},size=${param.size},q=${param.q},recall=${param.recall},resultCodes=${param.resultCodes},total=${param.total})}">
                     次へ &raquo;
                 </a>
                 <button type="button" class="btn btn-outline-secondary"

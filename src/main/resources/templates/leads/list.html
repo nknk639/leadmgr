@@ -100,7 +100,7 @@
                     <tr th:each="lead, stat : ${leads}">
                         <td th:text="${stat.index + 1}"></td>
                         <td>
-                            <a th:href="@{/leads/{id}(id=${lead.id},page=${leads.number},size=${leads.size},q=${param.q},recall=${param.recall},resultCodes=${param.resultCodes},idx=${leads.number * leads.size + stat.index + 1},total=${leads.totalElements})}" th:text="${lead.companyName}"></a>
+                            <a th:href="@{/leads/{id}(id=${lead.id},page=${leads.number},size=${leads.size},q=${param.q},recall=${param.recall},resultCodes=${param.resultCodes},ids=${idList},idx=${leads.number * leads.size + stat.index + 1},total=${leads.totalElements})}" th:text="${lead.companyName}"></a>
                         </td>
                         <td th:text="${lead.phoneNumber}"></td>
                         <td th:text="${lead.address}"></td>
@@ -112,7 +112,7 @@
                         <td th:text="${lead.nextCallDate != null ? #temporals.format(lead.nextCallDate, 'yyyy/MM/dd HH:mm') : '-'}"></td>
                         <td class="text-end">
                             <a class="btn btn-sm btn-outline-secondary"
-                               th:href="@{/leads/{id}(id=${lead.id},page=${leads.number},size=${leads.size},q=${param.q},recall=${param.recall},resultCodes=${param.resultCodes},idx=${leads.number * leads.size + stat.index + 1},total=${leads.totalElements})}">詳細</a>
+                               th:href="@{/leads/{id}(id=${lead.id},page=${leads.number},size=${leads.size},q=${param.q},recall=${param.recall},resultCodes=${param.resultCodes},ids=${idList},idx=${leads.number * leads.size + stat.index + 1},total=${leads.totalElements})}">詳細</a>
                         </td>
                     </tr>
                     </tbody>
