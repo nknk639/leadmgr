@@ -32,4 +32,9 @@ public class ResultCode {
 
     @Column(name = "active", nullable = false, columnDefinition = "TINYINT(1) default 1")
     private Boolean active;
+    
+    public boolean isEnabled() {
+        return this.active;
+    }
+    
 }
