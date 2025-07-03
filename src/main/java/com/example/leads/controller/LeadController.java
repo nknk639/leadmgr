@@ -64,16 +64,21 @@ public class LeadController {
      // // 表示順リストが渡されている場合はその順で前後を決定
         Long prevId = null;
         Long nextId = null;
-        int current = idx != null ? idx : -1;
+        int currentIndex = idx != null ? idx : -1; // 1-based index for display
+        int listIndex = currentIndex - 1;          // convert to 0-based for list access
+        
         if (ids != null && !ids.isEmpty()) {
-            if (current < 0) {
-                current = ids.indexOf(id);
+        	// idx パラメータが無い場合はリスト内の位置を取得
+            if (currentIndex < 0) {
+                listIndex = ids.indexOf(id);
+                currentIndex = listIndex >= 0 ? listIndex + 1 : -1;
             }
-            if (current > 0) {
-                prevId = ids.get(current - 1);
+            // 前後の ID を 0-based の位置から計算
+            if (listIndex > 0) {
+                prevId = ids.get(listIndex - 1);
             }
-            if (current < ids.size() - 1 && current >= 0) {
-                nextId = ids.get(current + 1);
+            if (listIndex >= 0 && listIndex < ids.size() - 1) {
+                nextId = ids.get(listIndex + 1);
             }
         } else {
             // Fallback: 単純に ID ±1
@@ -84,7 +89,7 @@ public class LeadController {
         model.addAttribute("prevLeadId", prevId);
         model.addAttribute("nextLeadId", nextId);
         model.addAttribute("idList", ids != null ? ids : List.of());
-        model.addAttribute("currentIndex", current);
+        model.addAttribute("currentIndex", currentIndex);
 
         model.addAttribute("lead", lead);
         model.addAttribute("callHistories", callSvc.getHistories(lead));
