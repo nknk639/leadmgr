@@ -5,19 +5,19 @@ SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
 
 -- -----------------------------------------------------
--- Schema leadmgr
+-- Schema ichiri_leadmgr
 -- -----------------------------------------------------
 
 -- -----------------------------------------------------
--- Schema leadmgr
+-- Schema ichiri_leadmgr
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `leadmgr` DEFAULT CHARACTER SET utf8 ;
-USE `leadmgr` ;
+CREATE SCHEMA IF NOT EXISTS `ichiri_leadmgr` DEFAULT CHARACTER SET utf8 ;
+USE `ichiri_leadmgr` ;
 
 -- -----------------------------------------------------
--- Table `leadmgr`.`result_codes`
+-- Table `ichiri_leadmgr`.`result_codes`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `leadmgr`.`result_codes` (
+CREATE TABLE IF NOT EXISTS `ichiri_leadmgr`.`result_codes` (
   `result_call_id` BIGINT NOT NULL AUTO_INCREMENT,
   `code` VARCHAR(255) NULL,
   `label` VARCHAR(255) NULL,
@@ -27,9 +27,9 @@ ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `leadmgr`.`leads`
+-- Table `ichiri_leadmgr`.`leads`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `leadmgr`.`leads` (
+CREATE TABLE IF NOT EXISTS `ichiri_leadmgr`.`leads` (
   `lead_id` BIGINT NOT NULL AUTO_INCREMENT,
   `campany_name` VARCHAR(255) NOT NULL,
   `address` TEXT NULL,
@@ -47,16 +47,16 @@ CREATE TABLE IF NOT EXISTS `leadmgr`.`leads` (
   INDEX `fk_leads_result_call_id_idx` (`last_call_result` ASC) VISIBLE,
   CONSTRAINT `fk_leads_result_call_id`
     FOREIGN KEY (`last_call_result`)
-    REFERENCES `leadmgr`.`result_codes` (`result_call_id`)
+    REFERENCES `ichiri_leadmgr`.`result_codes` (`result_call_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;
 
 
 -- -----------------------------------------------------
--- Table `leadmgr`.`call_history`
+-- Table `ichiri_leadmgr`.`call_history`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `leadmgr`.`call_history` (
+CREATE TABLE IF NOT EXISTS `ichiri_leadmgr`.`call_history` (
   `call_history_id` BIGINT NOT NULL AUTO_INCREMENT,
   `lead_id` BIGINT NULL,
   `call_datetime` DATETIME NOT NULL,
@@ -69,17 +69,17 @@ CREATE TABLE IF NOT EXISTS `leadmgr`.`call_history` (
   INDEX `fk_call_history_prev_idx` (`prev_result_code` ASC) VISIBLE,
   CONSTRAINT `fk_call_history_lead_id`
     FOREIGN KEY (`lead_id`)
-    REFERENCES `leadmgr`.`leads` (`lead_id`)
+    REFERENCES `ichiri_leadmgr`.`leads` (`lead_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_call_history_result`
     FOREIGN KEY (`result_code`)
-    REFERENCES `leadmgr`.`result_codes` (`result_call_id`)
+    REFERENCES `ichiri_leadmgr`.`result_codes` (`result_call_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
   CONSTRAINT `fk_call_history_prev`
     FOREIGN KEY (`prev_result_code`)
-    REFERENCES `leadmgr`.`result_codes` (`result_call_id`)
+    REFERENCES `ichiri_leadmgr`.`result_codes` (`result_call_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
 ENGINE = InnoDB;

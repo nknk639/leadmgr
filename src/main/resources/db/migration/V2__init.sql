@@ -11,43 +11,43 @@
 -- -----------------------------------------------------
 
 -- ① 既存 FK を一旦削除（result_codes PK 名変更のため）
-ALTER TABLE `leadmgr`.`call_history`
+ALTER TABLE `ichiri_leadmgr`.`call_history`
     DROP FOREIGN KEY `fk_call_history_result`,
     DROP FOREIGN KEY `fk_call_history_prev`;
 
-ALTER TABLE `leadmgr`.`leads`
+ALTER TABLE `ichiri_leadmgr`.`leads`
     DROP FOREIGN KEY `fk_leads_result_call_id`;
 
 -- ② leads テーブル列名修正 & 新規列追加
-ALTER TABLE `leadmgr`.`leads`
+ALTER TABLE `ichiri_leadmgr`.`leads`
     CHANGE COLUMN `campany_name`     `company_name`     VARCHAR(255) NOT NULL,
     CHANGE COLUMN `trial_employees`  `trial_employment` TINYINT NULL,
     ADD COLUMN    `total_employees`  INT NULL AFTER `posting_date`,
     ADD COLUMN    `local_employees`  INT NULL AFTER `total_employees`;
 
 -- ③ result_codes 主キー列名を統一
-ALTER TABLE `leadmgr`.`result_codes`
+ALTER TABLE `ichiri_leadmgr`.`result_codes`
     CHANGE COLUMN `result_call_id` `result_code_id` BIGINT NOT NULL AUTO_INCREMENT,
     DROP PRIMARY KEY,
     ADD PRIMARY KEY (`result_code_id`);
 
 -- ④ 参照 FK を再生成（新しい PK 名で張り直す）
-ALTER TABLE `leadmgr`.`leads`
+ALTER TABLE `ichiri_leadmgr`.`leads`
     ADD CONSTRAINT `fk_leads_result_code_id`
         FOREIGN KEY (`last_call_result`)
-        REFERENCES `leadmgr`.`result_codes` (`result_code_id`)
+        REFERENCES `ichiri_leadmgr`.`result_codes` (`result_code_id`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION;
 
-ALTER TABLE `leadmgr`.`call_history`
+ALTER TABLE `ichiri_leadmgr`.`call_history`
     ADD CONSTRAINT `fk_call_history_result`
         FOREIGN KEY (`result_code`)
-        REFERENCES `leadmgr`.`result_codes` (`result_code_id`)
+        REFERENCES `ichiri_leadmgr`.`result_codes` (`result_code_id`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION,
     ADD CONSTRAINT `fk_call_history_prev`
         FOREIGN KEY (`prev_result_code`)
-        REFERENCES `leadmgr`.`result_codes` (`result_code_id`)
+        REFERENCES `ichiri_leadmgr`.`result_codes` (`result_code_id`)
         ON DELETE NO ACTION
         ON UPDATE NO ACTION;
 
